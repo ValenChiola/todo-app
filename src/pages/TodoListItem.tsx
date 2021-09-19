@@ -1,5 +1,9 @@
 import React from "react";
+
+//Context
 import { ITodo, useTodoContext } from "./../context/TodoProvider";
+
+//Components
 import { Button } from "../components/Button";
 
 export const TodoListItem = ({ todo }: IProps) => {

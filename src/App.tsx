@@ -1,8 +1,12 @@
 import React from "react";
-import "./App.css";
+
+//Components
 import { TodoForm } from './pages/TodoForm';
 import { TodoList } from "./pages/TodoList";
+
+//Styles
 import "bootstrap/dist/css/bootstrap.min.css"
+import "./App.css";
 
 function App() {
   return (

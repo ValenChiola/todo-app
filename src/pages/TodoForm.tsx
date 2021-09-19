@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+
+//Context
 import { useTodoContext, ITodo } from "../context/TodoProvider";
+
+//Components
 import { Button } from "../components/Button";
 
 export const TodoForm = () => {
@@ -12,11 +16,11 @@ export const TodoForm = () => {
 
   const addTodo = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (newTodo.trim() === '') return
+    if (newTodo.trim() === "") return;
     const todo: ITodo = {
       content: newTodo,
       done: false,
-      id: Date.now().toLocaleString()
+      id: Date.now().toLocaleString(),
     };
     setTodos([todo, ...todos]);
     setNewTodo("");

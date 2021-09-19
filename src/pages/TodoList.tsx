@@ -1,5 +1,9 @@
 import React from "react";
+
+//Context
 import { ITodo, useTodoContext } from "./../context/TodoProvider";
+
+//Components
 import { TodoListItem } from "./TodoListItem";
 
 export const TodoList = () => {
