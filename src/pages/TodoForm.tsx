@@ -16,6 +16,7 @@ export const TodoForm = () => {
     const todo: ITodo = {
       content: newTodo,
       done: false,
+      id: Date.now().toLocaleString()
     };
     setTodos([todo, ...todos]);
     setNewTodo("");

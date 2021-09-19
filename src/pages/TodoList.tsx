@@ -9,8 +9,8 @@ export const TodoList = () => {
     <div>
       {
         //List
-        todos.map((todo: ITodo, index: number) => (
-          <TodoListItem key={index} todo={todo} />
+        todos.map((todo: ITodo) => (
+          <TodoListItem key={todo.id} todo={todo} />
         ))
       }
     </div>

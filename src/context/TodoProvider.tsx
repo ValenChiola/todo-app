@@ -26,4 +26,5 @@ interface IContextValues {
 export interface ITodo {
     content: string
     done: boolean
+    id: string
 }

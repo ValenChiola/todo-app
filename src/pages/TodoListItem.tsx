@@ -11,6 +11,7 @@ export const TodoListItem = ({ todo }: IProps) => {
     newTodos.splice(i, 1, {
       content: todo.content,
       done: !todo.done,
+      id: todo.id
     });
     setTodos(newTodos);
   };
