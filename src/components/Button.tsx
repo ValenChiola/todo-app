@@ -1,5 +1,7 @@
 import React from "react";
 
+import { ClickEvent } from "../pages/TodoForm";
+
 export const Button = (props: IProps) => {
   const { label } = props;
 
@@ -9,5 +11,5 @@ export const Button = (props: IProps) => {
 interface IProps {
   label: string
   className?: string
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onClick: (e: ClickEvent) => void
 }
