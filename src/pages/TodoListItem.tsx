@@ -1,52 +1,58 @@
 import React from "react";
-
-//Context
-import { ITodo, useTodoContext } from "./../context/TodoProvider";
+import { useMutation, useQueryClient } from "react-query";
 
 //Components
-import { Button } from "../components/Button";
+import { iTodoFromApi, removeTodo, toggleDoneTodo } from "./../services/api";
+import { useUIContext } from "./../context/UIContext";
 
 export const TodoListItem = ({ todo }: IProps) => {
-  const { todos, setTodos } = useTodoContext();
+  const { showToast } = useUIContext();
+  const queryClient = useQueryClient();
 
-  const toggleDone = () => {
-    const newTodos = [...todos];
-    const i = newTodos.indexOf(todo);
-    newTodos.splice(i, 1, {
-      content: todo.content,
-      done: !todo.done,
-      id: todo.id
-    });
-    setTodos(newTodos);
-  };
+  const toggleMutation = useMutation(() => toggleDoneTodo(todo.id), {
+    onMutate: async () => {
+      todo.done = !todo.done;
+    },
 
-  const removeTodo = () => {
-    const newTodos = [...todos];
-    const i = newTodos.indexOf(todo);
-    newTodos.splice(i, 1);
-    setTodos(newTodos);
-  };
+    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+  });
+
+  const removeMutation = useMutation(() => removeTodo(todo.id), {
+    onMutate: async () => {
+      const todos = queryClient.getQueryData<iTodoFromApi[]>(["getAllTodos"]);
+      if (todos) {
+        const newTodos = todos.slice();
+        const index = newTodos.indexOf(todo);
+        newTodos.splice(index, 1);
+        queryClient.setQueryData<iTodoFromApi[]>(["getAllTodos"], newTodos);
+      }
+    },
+
+    onSuccess: (message) => showToast(message, "error"),
+
+    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+  });
 
   return (
     <div
-      className={`w-75 h-15 card mt-4 p-1 ${
-        todo.done ? "done" : ""
-      }`}
-      style={{minWidth: '25%'}}
+      className={`w-75 h-15 card mt-4 p-1 ${todo.done ? "done" : ""}`}
+      style={{ minWidth: "25%" }}
     >
       <div className="d-flex justify-content-between">
         <h4 className="m-1">{todo.content}</h4>
         <div>
-          <Button
+          <button
             className="btn btn-success btn-sm m-1"
-            onClick={toggleDone}
-            label="✓"
-          />
-          <Button
+            onClick={() => toggleMutation.mutate()}
+          >
+            ✓
+          </button>
+          <button
             className="btn btn-danger btn-sm m-1"
-            onClick={removeTodo}
-            label="✖"
-          />
+            onClick={() => removeMutation.mutate()}
+          >
+            ✖
+          </button>
         </div>
       </div>
     </div>
@@ -54,5 +60,5 @@ export const TodoListItem = ({ todo }: IProps) => {
 };
 
 interface IProps {
-  todo: ITodo;
+  todo: iTodoFromApi;
 }

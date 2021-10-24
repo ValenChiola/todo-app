@@ -1,19 +1,22 @@
 import React from "react";
 
 //Context
-import { ITodo, useTodoContext } from "./../context/TodoProvider";
 
 //Components
 import { TodoListItem } from "./TodoListItem";
+import { getAllTodos, iTodoFromApi } from "./../services/api";
+import { useQuery } from "react-query";
 
 export const TodoList = () => {
-  const { todos } = useTodoContext();
+  const { data } = useQuery<iTodoFromApi[]>(["getAllTodos"], getAllTodos);
+
+  if (!data) return null;
 
   return (
     <div>
       {
         //List
-        todos.map((todo: ITodo) => (
+        data.map((todo) => (
           <TodoListItem key={todo.id} todo={todo} />
         ))
       }
