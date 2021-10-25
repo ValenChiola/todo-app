@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 
-//Components
-import { Button } from "../components/Button";
 import { iTodoFromApi, saveTodo, removeAllTodos } from "./../services/api";
 import { useUIContext } from "../context/UIContext";
 import { useParams } from "react-router";
@@ -116,16 +114,12 @@ export const TodoForm = () => {
         />
       </div>
       <div className="d-flex">
-        <Button
-          className="btn btn-success m-1 btn-sm"
-          onClick={addTodo}
-          label="Añadir"
-        />
-        <Button
-          className="btn btn-danger m-1 btn-sm"
-          onClick={removeAll}
-          label="Eliminar todos"
-        />
+        <button className="btn btn-success m-1 btn-sm" onClick={addTodo}>
+          {id ? "Modificar" : "Añadir"}
+        </button>
+        <button className="btn btn-danger m-1 btn-sm" onClick={removeAll}>
+          Eliminar todos
+        </button>
       </div>
     </form>
   );
