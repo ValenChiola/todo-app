@@ -1,11 +1,13 @@
 import React from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useHistory } from "react-router-dom";
 
 //Components
 import { iTodoFromApi, removeTodo, toggleDoneTodo } from "./../services/api";
 import { useUIContext } from "./../context/UIContext";
 
 export const TodoListItem = ({ todo }: IProps) => {
+  let history = useHistory();
   const { showToast } = useUIContext();
   const queryClient = useQueryClient();
 
@@ -28,7 +30,10 @@ export const TodoListItem = ({ todo }: IProps) => {
       }
     },
 
-    onSuccess: (message) => showToast(message, "error"),
+    onSuccess: (message) => {
+      showToast(message, "error");
+      history.push("/");
+    },
 
     onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
   });
@@ -52,6 +57,12 @@ export const TodoListItem = ({ todo }: IProps) => {
             onClick={() => removeMutation.mutate()}
           >
             ✖
+          </button>
+          <button
+            className="btn btn-warning btn-sm m-1"
+            onClick={() => history.push(`/${todo.id}`)}
+          >
+            Modificar
           </button>
         </div>
       </div>
