@@ -46,7 +46,7 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <Context.Provider value={{ toast, showToast }}>
+    <Context.Provider value={{ showToast }}>
       {children}
       {
         <div
@@ -64,7 +64,6 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
 // Interfaces
 interface iContextValues {
   // eslint-disable-next-line no-unused-vars
-  toast: iToast;
   showToast: (
     message: iToast["message"],
     type?: iToast["type"],
