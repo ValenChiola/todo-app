@@ -1,27 +1,27 @@
 import React from "react";
 
 //Context
+import { useTodoContext } from "./../context/TodoContext";
 
 //Components
 import { TodoListItem } from "./TodoListItem";
-import { getAllTodos, iTodoFromApi } from "./../services/api";
-import { useQuery } from "react-query";
 
 export const TodoList = () => {
-  const { data, isLoading } = useQuery<iTodoFromApi[]>(
-    ["getAllTodos"],
-    getAllTodos
-  );
+  const { todos, status } = useTodoContext();
 
-  if (isLoading) return <p>Cargando datillos...</p>;
+  if (status === "error") return <p>Hubo un error :/</p>;
 
-  if (!data) return null;
+  if (status === "loading") return <p>Cargando datos...</p>;
+
+  if (!todos) return null;
+
+  if (!todos.length) return <p>No hay Todos todavía</p>;
 
   return (
     <>
       {
         //List
-        data.map((todo) => (
+        todos.map((todo) => (
           <TodoListItem key={todo.id} todo={todo} />
         ))
       }

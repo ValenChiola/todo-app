@@ -1,42 +1,58 @@
-import React from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import { useMutation } from "react-query";
 
-//Components
-import { iTodoFromApi, removeTodo, toggleDoneTodo } from "./../services/api";
+//Api
+import {
+  iTodoFromApi,
+  removeTodo,
+  saveTodo,
+  toggleDoneTodo,
+} from "./../services/api";
+
+//Context
 import { useUIContext } from "./../context/UIContext";
+import { useTodoContext } from "./../context/TodoContext";
 
 export const TodoListItem = ({ todo }: IProps) => {
-  let history = useHistory();
+  const [inputIsVisible, setInputIsVisible] = useState(false);
+  const [content, setContent] = useState(todo.content);
   const { showToast } = useUIContext();
-  const queryClient = useQueryClient();
+  const { todos, setTodos, invalidateQuery } = useTodoContext();
 
   const toggleMutation = useMutation(() => toggleDoneTodo(todo.id), {
     onMutate: async () => {
       todo.done = !todo.done;
     },
 
-    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+    onSettled: invalidateQuery,
   });
 
-  const removeMutation = useMutation(() => removeTodo(todo.id), {
+  const removeTodoMutation = useMutation(() => removeTodo(todo.id), {
     onMutate: async () => {
-      const todos = queryClient.getQueryData<iTodoFromApi[]>(["getAllTodos"]);
       if (todos) {
         const newTodos = todos.slice();
         const index = newTodos.indexOf(todo);
         newTodos.splice(index, 1);
-        queryClient.setQueryData<iTodoFromApi[]>(["getAllTodos"], newTodos);
+        setTodos(newTodos);
       }
     },
 
-    onSuccess: (message) => {
-      showToast(message, "error");
-      history.push("/");
-    },
-
-    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+    onSuccess: (message) => showToast(message, "error"),
+    onSettled: invalidateQuery,
   });
+
+  const updateMutation = useMutation(
+    () =>
+      saveTodo({
+        ...todo,
+        content,
+      }),
+    {
+      onMutate: async () => (todo.content = content),
+      onSuccess: ({ message }) => showToast(message),
+      onSettled: invalidateQuery,
+    }
+  );
 
   return (
     <div
@@ -44,7 +60,29 @@ export const TodoListItem = ({ todo }: IProps) => {
       style={{ minWidth: "25%" }}
     >
       <div className="d-flex justify-content-between">
-        <h4 className="m-1">{todo.content}</h4>
+        {
+          //Modify the content of the todo
+          inputIsVisible ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateMutation.mutate();
+                setInputIsVisible(false);
+              }}
+            >
+              <input
+                type="text"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+              <button type="submit" className="btn btn-success m-1 btn-sm">
+                Confirmar
+              </button>
+            </form>
+          ) : (
+            <h4 className="m-1">{todo.content}</h4>
+          )
+        }
         <div>
           <button
             className="btn btn-success btn-sm m-1"
@@ -54,13 +92,13 @@ export const TodoListItem = ({ todo }: IProps) => {
           </button>
           <button
             className="btn btn-danger btn-sm m-1"
-            onClick={() => removeMutation.mutate()}
+            onClick={() => removeTodoMutation.mutate()}
           >
             ✖
           </button>
           <button
             className="btn btn-warning btn-sm m-1"
-            onClick={() => history.push(`/${todo.id}`)}
+            onClick={() => setInputIsVisible(!inputIsVisible)}
           >
             Modificar
           </button>
