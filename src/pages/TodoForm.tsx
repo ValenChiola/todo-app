@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 //Api
 import { saveTodo, removeAllTodos } from "./../services/api";
@@ -11,8 +11,9 @@ import { useTodoContext } from "./../context/TodoContext";
 export const TodoForm = () => {
   const [todoContent, setTodoContent] = useState("");
   const { showToast } = useUIContext();
-  const { todos, setTodos, invalidateQuery } = useTodoContext();
+  const { todos, setTodos } = useTodoContext();
   const ref = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     ref.current?.focus();
@@ -46,7 +47,7 @@ export const TodoForm = () => {
 
       onSuccess: ({ message }) => showToast(message),
 
-      onSettled: invalidateQuery,
+      onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
     }
   );
 
@@ -76,7 +77,7 @@ export const TodoForm = () => {
         </button>
         <button
           className="btn btn-danger m-1 btn-sm"
-          disabled={!todos?.length}
+          disabled={!todos.length}
           onClick={removeAll}
         >
           Eliminar todos

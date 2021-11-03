@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+
+//Styles
+import Styles from "./TodoListItem.module.css";
 
 //Api
 import {
@@ -17,28 +20,21 @@ export const TodoListItem = ({ todo }: IProps) => {
   const [inputIsVisible, setInputIsVisible] = useState(false);
   const [content, setContent] = useState(todo.content);
   const { showToast } = useUIContext();
-  const { todos, setTodos, invalidateQuery } = useTodoContext();
+  const { todos, setTodos } = useTodoContext();
+  const queryClient = useQueryClient();
 
   const toggleMutation = useMutation(() => toggleDoneTodo(todo.id), {
     onMutate: async () => {
       todo.done = !todo.done;
     },
 
-    onSettled: invalidateQuery,
+    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
   });
 
   const removeTodoMutation = useMutation(() => removeTodo(todo.id), {
-    onMutate: async () => {
-      if (todos) {
-        const newTodos = todos.slice();
-        const index = newTodos.indexOf(todo);
-        newTodos.splice(index, 1);
-        setTodos(newTodos);
-      }
-    },
-
+    onMutate: async () => setTodos(todos.filter((item) => item.id !== todo.id)),
     onSuccess: (message) => showToast(message, "error"),
-    onSettled: invalidateQuery,
+    onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
   });
 
   const updateMutation = useMutation(
@@ -50,15 +46,12 @@ export const TodoListItem = ({ todo }: IProps) => {
     {
       onMutate: async () => (todo.content = content),
       onSuccess: ({ message }) => showToast(message),
-      onSettled: invalidateQuery,
+      onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
     }
   );
 
   return (
-    <div
-      className={`w-75 h-15 card mt-4 p-1 ${todo.done ? "done" : ""}`}
-      style={{ minWidth: "25%" }}
-    >
+    <div className={`card ${Styles.todo} ${todo.done ? Styles.done : ""}`}>
       <div className="d-flex justify-content-between">
         {
           //Modify the content of the todo

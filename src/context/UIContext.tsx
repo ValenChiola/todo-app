@@ -63,7 +63,6 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
 
 // Interfaces
 interface iContextValues {
-  // eslint-disable-next-line no-unused-vars
   showToast: (
     message: iToast["message"],
     type?: iToast["type"],

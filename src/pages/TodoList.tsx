@@ -13,8 +13,6 @@ export const TodoList = () => {
 
   if (status === "loading") return <p>Cargando datos...</p>;
 
-  if (!todos) return null;
-
   if (!todos.length) return <p>No hay Todos todavía</p>;
 
   return (

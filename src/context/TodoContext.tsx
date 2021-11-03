@@ -12,7 +12,7 @@ export const useTodoContext = () => useContext(Context);
 export const TodoProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
 
-  const { data, status } = useQuery<iTodoFromApi[]>(
+  const { data = [], status } = useQuery<iTodoFromApi[]>(
     ["getAllTodos"],
     getAllTodos,
     {
@@ -24,14 +24,8 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     queryClient.setQueryData<typeof data>(["getAllTodos"], todos);
   };
 
-  const invalidateQuery = () => {
-    queryClient.invalidateQueries(["getAllTodos"]);
-  };
-
   return (
-    <Context.Provider
-      value={{ todos: data, setTodos, invalidateQuery, status }}
-    >
+    <Context.Provider value={{ todos: data, setTodos, status }}>
       {children}
     </Context.Provider>
   );
@@ -39,9 +33,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
 // Interfaces
 interface iContextValues {
-  // eslint-disable-next-line no-unused-vars
   setTodos: (todos: iTodoFromApi[]) => void;
-  invalidateQuery: () => void;
-  todos: iTodoFromApi[] | undefined;
+  todos: iTodoFromApi[];
   status: "idle" | "error" | "loading" | "success";
 }
