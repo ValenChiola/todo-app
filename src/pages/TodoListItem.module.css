@@ -1,0 +1,11 @@
+.todo {
+  width: 75%;
+  margin-top: 15px;
+  padding: 0 10px;
+  min-width: 25%;
+}
+
+.todo.done {
+ text-decoration: line-through;
+  opacity: 0.7;
+}
