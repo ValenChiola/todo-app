@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import { getAllTodos, iTodoFromApi } from "../services/api";
+import { useTodoMutation } from "../hooks/useTodoMutation";
+import { iTodoFromApi } from "../services/api";
 
 const Context = createContext({} as iContextValues);
 Context.displayName = "TodoContext";
@@ -10,22 +10,38 @@ export const useTodoContext = () => useContext(Context);
 
 // HOC
 export const TodoProvider = ({ children }: { children: ReactNode }) => {
-  const queryClient = useQueryClient();
+  const {
+    addTodoMutation,
+    removeAllMutation,
+    removeTodoMutation,
+    toggleTodoMutation,
+    updateTodoMutation,
+    appData: { todos, status },
+  } = useTodoMutation();
 
-  const { data = [], status } = useQuery<iTodoFromApi[]>(
-    ["getAllTodos"],
-    getAllTodos,
-    {
-      retry: 3,
-    }
-  );
+  const addTodo = (content: string) => addTodoMutation({ content });
 
-  const setTodos = (todos: iTodoFromApi[]) => {
-    queryClient.setQueryData<typeof data>(["getAllTodos"], todos);
-  };
+  const removeAll = () => removeAllMutation();
+
+  const removeTodo = (id: string) => removeTodoMutation({ id });
+
+  const toggleTodo = (todo: iTodoFromApi) => toggleTodoMutation({ todo });
+
+  const updateTodo = (todo: iTodoFromApi, content: string) =>
+    updateTodoMutation({ todo, content });
 
   return (
-    <Context.Provider value={{ todos: data, setTodos, status }}>
+    <Context.Provider
+      value={{
+        addTodo,
+        removeAll,
+        removeTodo,
+        toggleTodo,
+        updateTodo,
+        todos,
+        status,
+      }}
+    >
       {children}
     </Context.Provider>
   );
@@ -33,7 +49,11 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
 // Interfaces
 interface iContextValues {
-  setTodos: (todos: iTodoFromApi[]) => void;
+  addTodo: (content: string) => void;
+  removeAll: () => void;
+  removeTodo: (id: string) => void;
+  toggleTodo: (todo: iTodoFromApi) => void;
+  updateTodo: (todo: iTodoFromApi, content: string) => void;
   todos: iTodoFromApi[];
   status: "idle" | "error" | "loading" | "success";
 }

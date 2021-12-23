@@ -3,14 +3,22 @@ import Axios from "axios";
 Axios.defaults.baseURL = "http://localhost:8080/api/v1";
 
 export const getTodoById = async (id: string) => {
-  const endpoint = `/todos/${id}`;
-  const { data } = await Axios.get<iGetTodo>(endpoint);
-  return data.data.todo;
+  try {
+    const endpoint = `/todos/${id}`;
+    const { data } = await Axios.get<iGetTodo>(endpoint);
+    return data.data.todo;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 export const getAllTodos = async () => {
-  const { data } = await Axios.get<iGetTodos>("/todos");
-  return data.data.todos;
+  try {
+    const { data } = await Axios.get<iGetTodos>("/todos");
+    return data.data.todos;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 export const saveTodo = async (todo: Partial<iTodoFromApi>) => {

@@ -24,7 +24,7 @@ function App() {
 
 const Main = () => {
   return (
-    <div className="container d-flex flex-column">
+    <div className="container d-flex flex-column w-50">
       <h1>Todo App</h1>
       <TodoForm />
       <TodoList />

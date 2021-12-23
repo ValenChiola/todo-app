@@ -1,0 +1,21 @@
+i {
+  display: inline-grid;
+  place-items: center;
+}
+
+.svg {
+  width: inherit;
+  height: inherit;
+}
+
+.small {
+  width: 1em;
+}
+
+.medium {
+  width: 1.5em;
+}
+
+.large {
+  width: 2em;
+}
