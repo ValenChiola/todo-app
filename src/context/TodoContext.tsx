@@ -1,8 +1,9 @@
 import React, { createContext, ReactNode, useContext } from "react";
+import { useQuery } from "react-query";
 import { useTodoMutation } from "../hooks/useTodoMutation";
-import { iTodoFromApi } from "../services/api";
+import { getAllTodos, TodoFromApi } from "../services/api";
 
-const Context = createContext({} as iContextValues);
+const Context = createContext({} as ContextValues);
 Context.displayName = "TodoContext";
 
 // Hook
@@ -16,8 +17,15 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     removeTodoMutation,
     toggleTodoMutation,
     updateTodoMutation,
-    appData: { todos, status },
   } = useTodoMutation();
+
+  const { data = [], status } = useQuery<TodoFromApi[]>(
+    ["getAllTodos"],
+    getAllTodos,
+    {
+      retry: 3,
+    }
+  );
 
   const addTodo = (content: string) => addTodoMutation({ content });
 
@@ -25,10 +33,9 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
   const removeTodo = (id: string) => removeTodoMutation({ id });
 
-  const toggleTodo = (todo: iTodoFromApi) => toggleTodoMutation({ todo });
+  const toggleTodo = (id: string) => toggleTodoMutation({ id });
 
-  const updateTodo = (todo: iTodoFromApi, content: string) =>
-    updateTodoMutation({ todo, content });
+  const updateTodo = (todo: TodoFromApi) => updateTodoMutation({ todo });
 
   return (
     <Context.Provider
@@ -38,7 +45,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         removeTodo,
         toggleTodo,
         updateTodo,
-        todos,
+        todos: data,
         status,
       }}
     >
@@ -48,12 +55,12 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Interfaces
-interface iContextValues {
+interface ContextValues {
   addTodo: (content: string) => void;
   removeAll: () => void;
   removeTodo: (id: string) => void;
-  toggleTodo: (todo: iTodoFromApi) => void;
-  updateTodo: (todo: iTodoFromApi, content: string) => void;
-  todos: iTodoFromApi[];
+  toggleTodo: (id: string) => void;
+  updateTodo: (todo: TodoFromApi) => void;
+  todos: TodoFromApi[];
   status: "idle" | "error" | "loading" | "success";
 }

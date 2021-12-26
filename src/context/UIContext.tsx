@@ -9,13 +9,13 @@ import React, {
 // Styles
 import Styles from "./UIContext.module.css";
 
-const defaultToast: iToast = {
+const defaultToast: Toast = {
   message: null,
   delay: 3,
   type: "success",
 };
 
-const Context = createContext({} as iContextValues);
+const Context = createContext({} as ContextValues);
 Context.displayName = "UIContext";
 
 // Hook
@@ -32,12 +32,9 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [toast]);
 
-  const showToast = (
-    message: iToast["message"],
-    type: iToast["type"] = "success",
-    delay: iToast["delay"] = 3
-  ) => {
+  const showToast = (message: Toast["message"], data: DataProps = {}) => {
     if (typeof message !== "string") message = String(message);
+    const { type = "success", delay = 3 } = data;
     setToast({
       message,
       delay,
@@ -62,15 +59,16 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Interfaces
-interface iContextValues {
-  showToast: (
-    message: iToast["message"],
-    type?: iToast["type"],
-    delay?: iToast["delay"]
-  ) => void;
+interface ContextValues {
+  showToast: (message: Toast["message"], data?: DataProps) => void;
 }
 
-interface iToast {
+interface DataProps {
+  type?: Toast["type"];
+  delay?: Toast["delay"];
+}
+
+interface Toast {
   message: string | null;
   type: "success" | "error" | "info";
   delay: number;

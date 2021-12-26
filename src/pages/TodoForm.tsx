@@ -13,8 +13,8 @@ export const TodoForm = () => {
   }, []);
 
   return (
-    <form className="d-flex flex-column w-75">
-      <div className="m-1 d-flex flex-column">
+    <form className="d-flex flex-column">
+      <div className="d-flex flex-column" style={{ margin: "1 auto" }}>
         <label>Ingrese la tarea</label>
         <input
           type="text"
@@ -25,8 +25,9 @@ export const TodoForm = () => {
       </div>
       <div className="d-flex">
         <button
-          className="btn btn-success m-1 btn-sm"
-          disabled={!todoContent.length}
+          className="btn btn-success btn-sm"
+          disabled={!todoContent.trim().length}
+          style={{ margin: "5px 5px 0 0" }}
           onClick={(e) => {
             e.preventDefault();
             addTodo(todoContent);
@@ -36,9 +37,13 @@ export const TodoForm = () => {
           Añadir
         </button>
         <button
-          className="btn btn-danger m-1 btn-sm"
+          className="btn btn-danger btn-sm"
+          style={{ margin: "5px 0 0 0" }}
           disabled={!todos.length}
-          onClick={() => removeAll()}
+          onClick={(e) => {
+            e.preventDefault();
+            removeAll();
+          }}
         >
           Eliminar todos
         </button>

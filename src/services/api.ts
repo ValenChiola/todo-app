@@ -5,7 +5,7 @@ Axios.defaults.baseURL = "http://localhost:8080/api/v1";
 export const getTodoById = async (id: string) => {
   try {
     const endpoint = `/todos/${id}`;
-    const { data } = await Axios.get<iGetTodo>(endpoint);
+    const { data } = await Axios.get<GetTodo>(endpoint);
     return data.data.todo;
   } catch (error) {
     return Promise.reject(error);
@@ -14,17 +14,17 @@ export const getTodoById = async (id: string) => {
 
 export const getAllTodos = async () => {
   try {
-    const { data } = await Axios.get<iGetTodos>("/todos");
+    const { data } = await Axios.get<GetTodos>("/todos");
     return data.data.todos;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-export const saveTodo = async (todo: Partial<iTodoFromApi>) => {
+export const saveTodo = async (todo: Partial<TodoFromApi>) => {
   try {
-    const response = await Axios.post<iPostTodos>("/todos", todo);
-    return response.data;
+    const { data } = await Axios.post<PostTodos>("/todos", todo);
+    return data;
   } catch (error) {
     return Promise.reject(error);
   }
@@ -32,7 +32,7 @@ export const saveTodo = async (todo: Partial<iTodoFromApi>) => {
 
 export const removeAllTodos = async () => {
   try {
-    const { data } = await Axios.delete<iDeleteTodos>("/todos");
+    const { data } = await Axios.delete<DeleteTodos>("/todos");
     return data.message;
   } catch (error) {
     return Promise.reject(error);
@@ -42,7 +42,7 @@ export const removeAllTodos = async () => {
 export const removeTodo = async (id: string) => {
   try {
     const endpoint = `/todos/${id}`;
-    const { data } = await Axios.delete<iDeleteTodos>(endpoint);
+    const { data } = await Axios.delete<DeleteTodos>(endpoint);
     return data.message;
   } catch (error) {
     return Promise.reject(error);
@@ -58,30 +58,30 @@ export const toggleDoneTodo = async (id: string) => {
   }
 };
 
-interface iGetTodo {
+interface GetTodo {
   data: {
-    todo: iTodoFromApi;
+    todo: TodoFromApi;
   };
 }
 
-interface iGetTodos {
+interface GetTodos {
   data: {
-    todos: iTodoFromApi[];
+    todos: TodoFromApi[];
   };
 }
 
-interface iPostTodos {
+interface PostTodos {
   data: {
-    todo: iTodoFromApi;
+    todo: TodoFromApi;
   };
   message: string;
 }
 
-interface iDeleteTodos {
+interface DeleteTodos {
   message: string;
 }
 
-export interface iTodoFromApi {
+export interface TodoFromApi {
   id: string;
   content: string;
   done: boolean;

@@ -1,29 +1,35 @@
 import React from "react";
 
-//Styles
-import Styles from "./TodoListItem.module.css";
-
 //Api
-import { iTodoFromApi } from "./../services/api";
+import { TodoFromApi } from "./../services/api";
 
-//Context
-import { useTodoContext } from "./../context/TodoContext";
+//Components
 import { Editable } from "../components/Editable";
 import { Icon } from "../components/icon/Icon";
 
-export const TodoListItem = ({ todo }: IProps) => {
+//Context
+import { useTodoContext } from "./../context/TodoContext";
+
+//Styles
+import Styles from "./TodoListItem.module.css";
+
+export const TodoListItem = ({ todo }: Props) => {
   const { removeTodo, toggleTodo, updateTodo } = useTodoContext();
 
   return (
     <div className={`card ${Styles.todo} ${todo.done ? Styles.done : ""}`}>
       <div className="d-flex justify-content-between">
-        <Editable onEdit={(text) => updateTodo(todo, text)}>
+        {!todo.done ? (
+          <Editable onEdit={(text) => updateTodo({ ...todo, content: text })}>
+            <h4 className="m-1">{todo.content}</h4>
+          </Editable>
+        ) : (
           <h4 className="m-1">{todo.content}</h4>
-        </Editable>
+        )}
         <div style={{ display: "flex" }}>
           <Icon
             type="check"
-            onClick={() => toggleTodo(todo)}
+            onClick={() => toggleTodo(todo.id)}
             style={{ marginRight: 8, color: "green" }}
           />
           <Icon
@@ -37,6 +43,6 @@ export const TodoListItem = ({ todo }: IProps) => {
   );
 };
 
-interface IProps {
-  todo: iTodoFromApi;
+interface Props {
+  todo: TodoFromApi;
 }
