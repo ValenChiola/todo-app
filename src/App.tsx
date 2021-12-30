@@ -3,7 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 
 //Context
-import { useUIContext } from "./context/UIContext";
+import { useUIContext } from "./context/ui/UIContext";
 
 //Components
 import { TodoForm } from "./pages/TodoForm";
@@ -30,7 +30,7 @@ export const App = () => {
       <Switch>
         <Route path="/">
           <div className="container d-flex flex-column w-50">
-            <h1>Todo App</h1>
+            <h1>ToDo App</h1>
             <TodoForm />
             <TodoList />
           </div>

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import { useUIContext } from "../context/UIContext";
+import { useUIContext } from "../context/ui/UIContext";
 import {
   TodoFromApi,
   removeAllTodos,
@@ -33,10 +33,10 @@ export const useTodoMutation = () => {
           ...todos,
         ]);
       },
-      onSuccess: ({ message }) => {
-        const type = message.includes("Error") ? "error" : "success";
-        showToast(message, { type });
-      },
+      onSuccess: ({ message }) => showToast(message),
+      onError: ({ response }) =>
+        showToast(response.data.message, { type: "error" }),
+
       onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
     }
   );
@@ -44,6 +44,8 @@ export const useTodoMutation = () => {
   const { mutate: removeAllMutation } = useMutation(removeAllTodos, {
     onMutate: () => setTodos([]),
     onSuccess: (message) => showToast(message, { type: "error" }),
+    onError: ({ response }) =>
+      showToast(response.data.message, { type: "error" }),
   });
 
   const { mutate: toggleTodoMutation } = useMutation(
@@ -61,6 +63,8 @@ export const useTodoMutation = () => {
         );
       },
       onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+      onError: ({ response }) =>
+        showToast(response.data.message, { type: "error" }),
     }
   );
 
@@ -73,6 +77,8 @@ export const useTodoMutation = () => {
       },
       onSuccess: (message) => showToast(message, { type: "error" }),
       onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+      onError: ({ response }) =>
+        showToast(response.data.message, { type: "error" }),
     }
   );
 
@@ -92,6 +98,8 @@ export const useTodoMutation = () => {
       },
       onSuccess: ({ message }) => showToast(message),
       onSettled: () => queryClient.invalidateQueries(["getAllTodos"]),
+      onError: ({ response }) =>
+        showToast(response.data.message, { type: "error" }),
     }
   );
 

@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 //Context
 import { TodoProvider } from "./context/TodoContext";
-import { UIProvider } from "./context/UIContext";
+import { UIProvider } from "./context/ui/UIContext";
 
 //Components
 import { App } from "./App";
