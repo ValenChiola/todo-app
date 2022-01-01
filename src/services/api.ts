@@ -24,7 +24,6 @@ export const getAllTodos = async () => {
 export const saveTodo = async (todo: Partial<TodoFromApi>) => {
   try {
     const { data } = await Axios.post<PostTodos>("/todos", todo);
-    console.log("data -> ", data);
     return data;
   } catch (error) {
     return Promise.reject(error);
