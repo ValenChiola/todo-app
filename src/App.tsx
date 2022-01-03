@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Switch } from "react-router";
 
@@ -12,12 +12,10 @@ import { TodoList } from "./pages/TodoList";
 //Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { Tour } from "./components/Tour";
 
 export const App = () => {
   const { showToast } = useUIContext();
-  const [shown, setShown] = useState(
-    JSON.parse(localStorage.getItem("shown") || "false")
-  );
 
   useEffect(() => {
     window.addEventListener("offline", () =>
@@ -36,22 +34,7 @@ export const App = () => {
             <h1>ToDo App</h1>
             <TodoForm />
             <TodoList />
-            {!shown && (
-              <div>
-                <p>
-                  Presiona "Esc" al editar el contenido del ToDo para cancelar
-                </p>
-                <button
-                  className="btn btn-success"
-                  onClick={() => {
-                    setShown(true);
-                    localStorage.setItem("shown", "true");
-                  }}
-                >
-                  Entendido
-                </button>
-              </div>
-            )}
+            <Tour />
           </div>
         </Route>
       </Switch>
