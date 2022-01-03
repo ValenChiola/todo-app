@@ -5,6 +5,10 @@
   min-width: 25%;
 }
 
+.todo h4 {
+  word-break: break-word;
+}
+
 .todo.done {
  text-decoration: line-through;
   opacity: 0.7;

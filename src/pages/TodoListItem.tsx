@@ -31,6 +31,7 @@ export const TodoListItem = ({ todo }: Props) => {
             type="check"
             onClick={() => toggleTodo(todo.id)}
             style={{ marginRight: 8, color: "green" }}
+            title={todo.done ? "Marcar como No Hecho" : "Marcar como Hecho"}
           />
           <Icon
             type="cross"

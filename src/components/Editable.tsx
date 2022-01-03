@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 //Components
 import { Icon } from "./icon/Icon";
@@ -10,14 +10,24 @@ export const Editable = (props: EditableProps) => {
     styles = { fontSize: 12, marginLeft: 5, opacity: ".6" },
   } = props;
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElementWithFirstChild>(null);
+  const [initialState, setInitialState] = useState<ReactNodeWithChildren>(
+    children as ReactNodeWithChildren
+  );
+
+  useEffect(
+    () => setInitialState(children as ReactNodeWithChildren),
+    [children]
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (!ref.current) return;
-    if (!ref.current.textContent) return;
-    if (e.key === "Escape") ref.current.blur();
+    if (e.key === "Escape") {
+      ref.current.blur();
+      ref.current.firstChild.innerText = initialState.props.children;
+    }
     if (e.key === "Enter") {
-      onEdit(ref.current.textContent);
+      onEdit(ref.current.innerText);
       ref.current.blur();
     }
   };
@@ -42,3 +52,11 @@ interface EditableProps {
   children: ReactNode;
   styles?: React.CSSProperties;
 }
+
+type ReactNodeWithChildren = ReactNode & {
+  props: { children: ReactNode };
+};
+
+type HTMLDivElementWithFirstChild = HTMLDivElement & {
+  firstChild: HTMLDivElement;
+};
