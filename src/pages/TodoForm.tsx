@@ -8,6 +8,17 @@ export const TodoForm = () => {
   const { todos, addTodo, removeAll } = useTodoContext();
   const ref = useRef<HTMLInputElement>(null);
 
+  const handleAddTodo = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addTodo(todoContent);
+    setTodoContent("");
+  };
+
+  const handleRemoveAll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    removeAll();
+  };
+
   useEffect(() => {
     ref.current?.focus();
   }, []);
@@ -28,11 +39,7 @@ export const TodoForm = () => {
           className="btn btn-success btn-sm"
           disabled={!todoContent.trim().length}
           style={{ margin: "5px 5px 0 0" }}
-          onClick={(e) => {
-            e.preventDefault();
-            addTodo(todoContent);
-            setTodoContent("");
-          }}
+          onClick={handleAddTodo}
         >
           Añadir
         </button>
@@ -40,10 +47,7 @@ export const TodoForm = () => {
           className="btn btn-danger btn-sm"
           style={{ margin: "5px 0 0 0" }}
           disabled={!todos.length}
-          onClick={(e) => {
-            e.preventDefault();
-            removeAll();
-          }}
+          onClick={handleRemoveAll}
         >
           Eliminar todos
         </button>
